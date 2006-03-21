@@ -1,5 +1,12 @@
 Revision history for Data-Dumper-Names
 
+0.02    2006-03-21
+        - Fixed a problem where variables referencing other variables could
+          have their names reported incorrectly.  Thanks to demerphq for
+          pointing out both the problem and the fix.
+        - Fixed a problem whereby "$foo = \@array" could have $foo reported as
+          "@foo"
+
 0.01    2005-10-05
         First version, released on an unsuspecting world.
 

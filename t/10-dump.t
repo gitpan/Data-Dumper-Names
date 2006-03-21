@@ -5,7 +5,7 @@ use strict;
 
 # many fewer tests required than for Data::Dumper::Simple
 # because this is not a source filter
-use Test::More tests => 7;
+use Test::More tests => 8;
 #use Test::More qw/no_plan/;
 
 my $CLASS;
@@ -60,3 +60,8 @@ sub test_scope {
 }
 
 test_scope;
+
+my $foo = \@array;
+$expected = Data::Dumper->Dump( [ $foo, \@array ], [qw/$foo *array/] );
+is Dumper( $foo, \@array ), $expected,
+    'References should maintain their correct names';

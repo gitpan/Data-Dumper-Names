@@ -2,15 +2,15 @@
 use ExtUtils::MakeMaker;
 WriteMakefile
 (
-  'PL_FILES' => {},
-  'INSTALLDIRS' => 'site',
   'NAME' => 'Data::Dumper::Names',
-  'EXE_FILES' => [],
   'VERSION_FROM' => 'lib/Data/Dumper/Names.pm',
   'PREREQ_PM' => {
-    'Test::More' => 0,
-    'Scalar::Util' => 0,
-    'PadWalker' => '0.13'
-  }
+    'PadWalker' => '0.13',
+    'Scalar::Util' => '0',
+    'Test::More' => '0'
+  },
+  'INSTALLDIRS' => 'site',
+  'EXE_FILES' => [],
+  'PL_FILES' => {}
 )
 ;

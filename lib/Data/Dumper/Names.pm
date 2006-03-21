@@ -15,11 +15,11 @@ Data::Dumper::Names - Dump variables with names (no source filter)
 
 =head1 VERSION
 
-Version 0.01
+Version 0.02
 
 =cut
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 =head1 SYNOPSIS
 
@@ -59,24 +59,25 @@ reference.
 sub Dumper {
     my $pad = peek_my(1);
     my %pad_vars;
-    while (my ($var, $ref) = each %$pad) {
-        $var =~ s/^[\$\@\%]/*/;
-        $pad_vars{_address($ref)} = $var;
+    while ( my ( $var, $ref ) = each %$pad ) {
+
+        # we no longer remove the '$' sigil because we don't want
+        # "$foo = \@array" reported as "@foo".
+        $var =~ s/^[\@\%]/*/;
+        $pad_vars{ refaddr $ref } = $var;
     }
     my @names;
     my $varcount = 1;
     foreach (@_) {
-        my $address = _address($_);
-        # Naive.  Expects they have no variables named /\$VAR\d+/
-        push @names, exists $pad_vars{$address}
-          ? $pad_vars{$address}
-          : 'VAR' . $varcount++;
+        my $name;
+        INNER: foreach ( \$_, $_ ) {
+            no warnings 'uninitialized'; 
+            $name = $pad_vars{ refaddr $_} and last INNER;
+        }
+        push @names, $name;
     }
-    return Data::Dumper->Dump(\@_,\@names);
-}
 
-sub _address {
-    refaddr $_[0] ? $_[0] : \$_[0];
+    return Data::Dumper->Dump( \@_, \@names );
 }
 
 =head1 CAVEATS
@@ -150,7 +151,7 @@ name the variables.
 
 =head1 AUTHOR
 
-Curtis, C<< <ovid@cpan.org> >>
+Curtis "Ovid" Poe, C<< <ovid@cpan.org> >>
 
 =head1 BUGS
 
@@ -164,13 +165,16 @@ your bug as I make changes.
 
 See L<Data::Dumper> and L<Data::Dumper::Simple>.
 
+Thanks to demerphq (Yves Orton) for finding a bug in how some variable names
+are reported.  See Changes for details.
+
 =head1 COPYRIGHT & LICENSE
 
-Copyright 2005 Curtis, all rights reserved.
+Copyright 2005 Curtis "Ovid" Poe, all rights reserved.
 
 This program is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
 
 =cut
 
-1; # End of Data::Dumper::Names
+1;    # End of Data::Dumper::Names

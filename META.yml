@@ -1,18 +1,8 @@
----
+--- #YAML:1.0
 name: Data-Dumper-Names
-version: 0.01
+version: 0.02
 author:
-  - Curtis <ovid@cpan.org>
-abstract: Dump variables with names (no source filter)
+  - "Curtis <ovid@cpan.org>"
+abstract: "Dump variables with names (no source filter)"
 license: perl
-resources:
-  license: http://dev.perl.org/licenses/
-requires:
-  PadWalker: 0.13
-  Scalar::Util: 0
-  Test::More: 0
-provides:
-  Data::Dumper::Names:
-    file: lib/Data/Dumper/Names.pm
-    version: 0.01
-generated_by: Module::Build version 0.2702
+generated_by: Module::Build version 0.2704, without YAML.pm
