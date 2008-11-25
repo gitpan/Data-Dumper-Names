@@ -1,5 +1,9 @@
 Revision history for Data-Dumper-Names
 
+0.03    2008-11-25
+        - Added $UpLevel variable to control how far up the stack we want to
+          look for the variables.
+
 0.02    2006-03-21
         - Fixed a problem where variables referencing other variables could
           have their names reported incorrectly.  Thanks to demerphq for

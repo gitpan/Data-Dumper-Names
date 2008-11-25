@@ -5,7 +5,7 @@ use strict;
 
 # many fewer tests required than for Data::Dumper::Simple
 # because this is not a source filter
-use Test::More tests => 8;
+use Test::More 'no_plan'; # tests => 8;
 #use Test::More qw/no_plan/;
 
 my $CLASS;
@@ -65,3 +65,22 @@ my $foo = \@array;
 $expected = Data::Dumper->Dump( [ $foo, \@array ], [qw/$foo *array/] );
 is Dumper( $foo, \@array ), $expected,
     'References should maintain their correct names';
+
+#
+# Testing $UpLevel
+#
+
+{
+    my $idiot = 'Ovidius';
+    local $Data::Dumper::Names::UpLevel = 2;
+    is test_uplevel($idiot), "\$idiot = 'Ovidius';\n",
+        '$UpLevel should adjust where we look for variables';
+}
+
+is Dumper( $foo, \@array ), $expected,
+    '... but returning to a new scope should still work';
+
+sub test_uplevel {
+    return Dumper(@_);
+}
+

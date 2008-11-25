@@ -7,7 +7,8 @@ use Data::Dumper ();
 use Scalar::Util 'refaddr';
 use PadWalker 'peek_my';
 use base 'Exporter';
-our @EXPORT = qw/Dumper/;
+our @EXPORT  = qw/Dumper/;
+our $UpLevel = 1;
 
 =head1 NAME
 
@@ -15,11 +16,11 @@ Data::Dumper::Names - Dump variables with names (no source filter)
 
 =head1 VERSION
 
-Version 0.02
+Version 0.03
 
 =cut
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 =head1 SYNOPSIS
 
@@ -57,7 +58,7 @@ reference.
 =cut
 
 sub Dumper {
-    my $pad = peek_my(1);
+    my $pad = peek_my($UpLevel);
     my %pad_vars;
     while ( my ( $var, $ref ) = each %$pad ) {
 
@@ -107,6 +108,26 @@ so consistently for the individual call to C<Dumper>.  (For Perl 5.8 and
 after, subsequent calls to C<Dumper> may have different results in the above
 case.  This is because of how Perl handles hash ordering).
 
+=head2 Call stack level
+
+You generally will call things with this:
+
+ warn Dumper($foo, $bar, \@baz);
+
+However, you might be refactoring code and want to shove that into a
+subroutine somewhere.  In that case, you'll need to set (via C<local>!), the
+$Data::Dumper::Names::UpLevel variable.  It defaults to one, but you might set
+it to a higher level, depending on how high up the call stack those variables
+are really located:
+
+ sub show {
+     return unless $ENV{VERBOSE};
+     local $Data::Dumper::Names::UpLevel = 2;
+     warn Dumper(@_);
+ }
+
+Note that if you fail to use C<local>, subsequent calls to C<Dumper> may be
+looking at the wrong call stack level.
 
 =head2 Unknown Variables
 
